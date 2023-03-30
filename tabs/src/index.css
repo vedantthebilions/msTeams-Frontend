@@ -1,0 +1,11 @@
+* {
+  box-sizing: border-box;
+  /* outline: 1px dashed #f00; */
+}
+
+body {
+  font-family: "Segoe UI" !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* background-color: #eeeeee; */
+}
