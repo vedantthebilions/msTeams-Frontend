@@ -5,6 +5,7 @@ import * as Msal from "msal";
 import InMeetUI from "./MeetingUIComponent/InMeetUI";
 import {PreMeetUI} from "./MeetingUIComponent/PreMeetUI";
 import Container from "@mui/material/Container";
+import StageUI from "./MeetingUIComponent/StageUI";
 
 class Rest extends Component {
   state = {
@@ -157,6 +158,7 @@ class Rest extends Component {
                 chatId={this.state.chatId}
                 accessToken={this.state.accessToken}
               />
+              // <StageUI/>
             ) : (
               <InMeetUI
                 metingDetails={this.state.meetingDetails}

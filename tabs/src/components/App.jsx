@@ -6,7 +6,7 @@ import Tab from "./Tab";
 import TabConfig from "./TabConfig";
 import "./App.css";
 import Rest from "./Rest";
-// import StageViewBasicTab from "./MeetingUIComponent/StageUI";
+import StageUI from "./MeetingUIComponent/StageUI";
 
 /**
  * The main app which handles the initialization and routing
@@ -20,7 +20,7 @@ export default function App() {
       <Route exact path="/config" component={TabConfig} />
       {/* <Route exact path="/tab" component={Tab} /> */}
       <Route exact path="/tab" component={Rest} />
-      {/* <Route exact path="/stageView" component={StageViewBasicTab} /> */}
+      <Route exact path="/stageView" component={StageUI} />
       <Route exact path="/rest" component={Rest} />
     </Router>
   );

@@ -35,6 +35,11 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import Input from '@mui/material/Input';
 
 export const PreMeetUI = (props) => {
   const [recordPermission, setrecordPermission] = React.useState(false);
@@ -80,12 +85,9 @@ export const PreMeetUI = (props) => {
     if (counter == false) {
       setTimeout(() => {
         saveMeeting();
-        // setRows(props.metingDetails[0].participants[
-        //   "attendees"
-        // ])
+      }, 3000);
     getPropsData();
 
-      }, 5000);
       getMeetingData();
       setcounter(true);
     }
@@ -165,11 +167,12 @@ export const PreMeetUI = (props) => {
         authorization: `${accessToken}`,
         meetingDetails: props.metingDetails,
         startTime: moment(props.metingDetails[0]?.startDateTime).format(
-          "hh:mm:ss A"
+          "hh:mm A"
         ),
         endTime: moment(props.metingDetails[0]?.endDateTime).format(
-          "hh:mm:ss A"
+          "hh:mm A"
         ),
+        dateTime: moment(props.metingDetails[0]?.startDateTime).format("dddd, MMMM DD, YYYY")
       };
       await Axios.post(
         `http://localhost:3001/tabApi/sendActivityNotification`,
@@ -227,16 +230,24 @@ export const PreMeetUI = (props) => {
 
   function requestSearch(searchedVal) {
     setSearched(searchedVal.target.value);
-    const data = props.metingDetails[0]?.participants["attendees"];
+    const data = JSON.parse(localStorage.getItem('meetingDetails'))
     // setRows(rows)
 
     let filteredRows = [];
-    setRows(filteredRows);
-    filteredRows = data.filter((row) => {
-      return row.upn.includes(searchedVal.target.value);
-    });
-    setRows(filteredRows);
-  }
+    // setRows(filteredRows);
+    if(searchedVal.target.value !== ''){
+      const filteredRows = data.participants["attendees"].filter((row) => {
+        console.log(row)
+        if(row.upn !== null){
+          return row.upn.includes(searchedVal.target.value);
+        }
+      });
+
+      setRows(filteredRows); 
+    }else{
+      let meetingData = JSON.parse(localStorage.getItem('meetingDetails'))
+      setRows(meetingData.participants["attendees"]); 
+    }}
 
   function cancelSearch() {
     setSearched("");
@@ -261,7 +272,7 @@ export const PreMeetUI = (props) => {
     width: "100%",
   }));
 
-  const Item_header = styled(Paper)(({ theme }) => ({
+  const Item_header = styled(Card)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#=",
     ...theme.typography.body2,
     padding: "20px",
@@ -542,7 +553,7 @@ export const PreMeetUI = (props) => {
 
               <Grid item xs={3}>
                 <>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={2} sx={{zIndex: 99999}}>
                     <Grid item xs={12} sm container>
                       <Grid item xs container direction="column" spacing={2}>
                         <Grid item xs>
@@ -556,10 +567,12 @@ export const PreMeetUI = (props) => {
                           <Typography variant="h6" color="text.primary">
                             <TextField
                               id="outlined-select-currency"
-                              className="z-index-9999"
+                              className="width-70"
                               select
                               value={currencyPreffered}
                               onChange={handleChange}
+                              variant="standard"
+                              
                             >
                               {Currency.map((option) => (
                                 <MenuItem
@@ -670,13 +683,31 @@ export const PreMeetUI = (props) => {
                         </Item>
                       </Grid>
                       <Grid item xs={3}>
-                          <TextField
+                      <FormControl variant="standard">
+                      <Input
+                            id="standard-adornment-weight"
+                            endAdornment={<InputAdornment position="end">  <SearchRoundedIcon /></InputAdornment>}
+                            aria-describedby="standard-weight-helper-text"
+                            inputProps={{
+                              'aria-label': 'weight',
+                            }}
+                            type="search"
+                            value={searched}
+                            onChange={(searchVal) => requestSearch(searchVal)}
+                          />
+                            </FormControl>
+                          {/* <TextField
+                           startAdornment={
+                            <InputAdornment position="start">
+                              <AccountCircle />
+                            </InputAdornment>
+                          }
                             label="Search participants"
                             className="search_field"
                             type="search"
                             value={searched}
                             onChange={(searchVal) => requestSearch(searchVal)}
-                          />
+                          /> */}
                           {/* <SearchBar
                             
                             onCancelSearch={() => cancelSearch()}
@@ -702,17 +733,19 @@ export const PreMeetUI = (props) => {
                         )
                         .map(function (i, index) {
                           return (
+                            <>
+                            {i.upn && 
                             <TableRow key={index}>
                               <TableCell component="th" scope="row">
                                 {props.metingDetails[0]?.participants[
                                   "attendees"
-                                ].indexOf(i) + 1}
+                                ].indexOf(i) + 2}
                               </TableCell>
                               <TableCell component="th" scope="row">
                                 {" "}
                               </TableCell>
                               <TableCell component="th" scope="row">
-                                {i.upn ? getName(i.upn) : "Guest"}
+                                {getName(i.upn)}
                               </TableCell>
                               <TableCell component="th" scope="row">
                                 {" "}
@@ -721,8 +754,9 @@ export const PreMeetUI = (props) => {
                                 {i.upn ? i.upn.trim() : ""}
                               </TableCell>
                             </TableRow>
-                          );
-                        })}
+                            }</>
+                          )})}
+                            
                     </TableBody>
                   </Table>
                   <TablePagination

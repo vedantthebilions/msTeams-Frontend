@@ -51,7 +51,7 @@ class InMeetUI extends Component {
     totaltimer: 0,
     flag: 0,
     featureNotActive: true,
-    featureNotActiveMessage: "",
+    featureNotActiveMessage: "Organizer has not activated feature for this meeting.",
     showAttendees: false,
     searched: "",
     rows: [],
@@ -98,6 +98,7 @@ class InMeetUI extends Component {
             result.data.meeting[0]["recordPermission"] === false ||
             result.data.meeting[0]["recordPermission"] === null
           ) {
+          console.log(result.data.meeting[0])
             this.setState({
               featureNotActiveMessage:
                 "Organizer has not activated feature for this meeting.",
@@ -167,22 +168,22 @@ class InMeetUI extends Component {
       }
   
       let meetingData = JSON.parse(localStorage.getItem('meetingDetails'))
-      if (meetingData.participants["attendees"].length < 20) {
-        meetingData.participants["attendees"].push(
-          {
-            identity: null,
-            role: "attendee",
-            upn: "janeDeveloper@x0gc3.onmicrosoft.com",
-            img: "https://content.fakeface.rest/female_45_b3e57178eb323fee36df8e8b4690c11ef82f3baa.jpg",
-          },
-          {
-            identity: null,
-            role: "attendee",
-            upn: "davejhon10@x0gc3.onmicrosoft.com",
-            img: "https://static.generated.photos/vue-static/face-generator/landing/wall/14.jpg",
-          }
-        );
-      }
+      // if (meetingData.participants["attendees"].length < 20) {
+      //   meetingData.participants["attendees"].push(
+      //     {
+      //       identity: null,
+      //       role: "attendee",
+      //       upn: "janeDeveloper@x0gc3.onmicrosoft.com",
+      //       img: "https://content.fakeface.rest/female_45_b3e57178eb323fee36df8e8b4690c11ef82f3baa.jpg",
+      //     },
+      //     {
+      //       identity: null,
+      //       role: "attendee",
+      //       upn: "davejhon10@x0gc3.onmicrosoft.com",
+      //       img: "https://static.generated.photos/vue-static/face-generator/landing/wall/14.jpg",
+      //     }
+      //   );
+      // }
        console.log(meetingData)
       this.setState({
         rows:meetingData.participants["attendees"]
@@ -244,6 +245,7 @@ class InMeetUI extends Component {
   };
 
   formatTime = (val, ...rest) => {
+    console.log('called')
     let value = val.toString();
     if (value.length < 2) {
       value = "0" + value;
@@ -436,9 +438,10 @@ class InMeetUI extends Component {
     };
     return (
       <>
-        {meetingStartTime && (
-          <>
-            {!this.state.showAttendees ? (
+      
+      {!featureNotActive ? (
+        <>
+         {!this.state.showAttendees ? (
               <Card sx={{ maxWidth: 345 }} className="in_meeting_card">
                 <CardContent>
                   <Typography
@@ -523,16 +526,13 @@ class InMeetUI extends Component {
                             value={this.state.searched}
                             onChange={(searchVal) => this.requestSearch(searchVal)}
                           />
-                          {/* <SearchBar
-                            
-                            onCancelSearch={() => cancelSearch()}
-                          /> */}
                       </Grid>
 
                   {this.state.rows.map(
                     function (i, index) {
                       return (
-                        <StyledPaper className="attendee_card" key={index}>
+                        <>
+                        {i.upn && (<StyledPaper className="attendee_card" key={index}>
                           <Grid container wrap="nowrap" spacing={2}>
                             <Grid item>
                               <Avatar style={{
@@ -549,15 +549,16 @@ class InMeetUI extends Component {
                               </Typography>
                             </Grid>
                           </Grid>
-                        </StyledPaper>
+                        </StyledPaper>)}
+                        </>
+
                       );
                     }
                   )}
                 </Box>
               </Card>
-            )}
-           
-            <Card className="timer_card">
+            )}  
+          <Card className="timer_card">
               <Typography
                 sx={{
                   fontSize: 16,
@@ -590,10 +591,61 @@ class InMeetUI extends Component {
                 />
               </CardContent>
             </Card>
-          </>
-        )}
+        </>
+      ) : (
+      <>
+      <Card className="main_card_inMeet">
+                <CardContent>
+                  <Typography variant="h6" component="span">
+                    Cost calculator feature
+                  </Typography>
+                </CardContent>
+                <CardContent>
+                  <Typography variant="h6" component="span">
+                    {featureNotActiveMessage}
+                  </Typography>
+                </CardContent>
+              </Card>
+      </>) }
+                
+           
 
-        {!meetingStartTime && (
+            {/* {!featureNotActive ? (
+              <Card className="main_card_inMeet">
+                <CardContent>
+                  <Typography variant="h6" component="h5">
+                    Do you want to record meeting cost ?
+                  </Typography>
+                  <br />
+                  <br />
+                  <Button
+                    variant="contained"
+                    startIcon={<PlayCircleFilledIcon />}
+                    sx={{ background: "orange" }}
+                    onClick={(e) => {
+                      this.startRecorging(e);
+                    }}
+                  >
+                    Start Recording
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="main_card_inMeet">
+                <CardContent>
+                  <Typography variant="h6" component="span">
+                    Cost calculator feature
+                  </Typography>
+                </CardContent>
+                <CardContent>
+                  <Typography variant="h6" component="span">
+                    {featureNotActiveMessage}
+                  </Typography>
+                </CardContent>
+              </Card>
+            )} */}
+
+        {/* {!meetingStartTime && (
           <>
             {featureNotActive ? (
               <Card className="main_card_inMeet">
@@ -630,7 +682,7 @@ class InMeetUI extends Component {
               </Card>
             )}
           </>
-        )}
+        )} */}
       </>
     );
   }

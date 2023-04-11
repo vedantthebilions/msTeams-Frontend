@@ -471,6 +471,10 @@ td {
   width: 100%;
 }
 
+.width-70{
+  width: 70%;
+}
+
 .premeet_header_image {
   width: 70px !important;
   height: 70px !important;
@@ -800,6 +804,30 @@ old $app-density-message-background-initial-hover-focus-darktheme
 .paper {
   background-color: whitesmoke !important;
 }
+
+
+
+/* Stage view trail */
+
+
+.row {
+  display: flex;
+}
+
+/* Create two equal columns that sits next to each other */
+.column {
+  flex: 50%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+.embeded-report{
+  height: 500px;
+  width: 100%;
+}
+/* Stage view trail */
+
+
 @keyframes lds-circle {
 
   0%,
